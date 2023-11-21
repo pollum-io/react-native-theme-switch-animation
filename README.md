@@ -3,10 +3,12 @@
 A Plug & Play Animations for Switching (Dark/Light) themes. 🌗
 
 ### 🦄 Features
-- ✅  Supports multiple animation types.
-- ✅  Blazing fast - [60/120]fps
-- ✅  Plug and Play, doesn't matter what you use for switching themes 
-- ✅  Can be used for different theme colors, not necessarily for dark/light
+
+- ✅ Supports multiple animation types.
+- ✅ Blazing fast - [60/120]fps
+- ✅ Plug and Play, doesn't matter what you use for switching themes
+- ✅ Can be used for different theme colors, not necessarily for dark/light
+- ✅ Supports turbo modules for new architecture
 
 <p align="center">
 <img src="https://github.com/WadhahEssam/react-native-theme-switch-animation/assets/24798045/0aa19507-702e-4075-b045-303ad27b3dc0" width="600"/>
@@ -17,15 +19,55 @@ A Plug & Play Animations for Switching (Dark/Light) themes. 🌗
 ```sh
 npm install react-native-theme-switch-animation
 ```
+
 OR
+
 ```sh
 yarn add react-native-theme-switch-animation
 ```
 
 ## Link
+
 (if you are using expo managed project, do a prebuild - `npx expo prebuild`)
+
 ```
 npx pod-install
+```
+
+## For React Native Versions 0.67 and Below
+
+### iOS:
+
+**Update your `Podfile`** with the following line:
+
+```
+pod 'react-native-theme-switch-animation', :path => '../node_modules/react-native-theme-switch-animation'
+```
+
+### Android:
+
+Modify your `android/app/build.gradle` file to include:
+
+```
+implementation project(':react-native-theme-switch-animation')
+```
+
+Update your `settings.gradle` file with:
+
+```
+include ':react-native-theme-switch-animation'
+project(':react-native-theme-switch-animation').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-theme-switch-animation/android')
+
+```
+
+Update MainActivity.java:
+
+```
+import com.themeswitchanimation.ThemeSwitchAnimationPackage;
+```
+
+```
+packages.add(new ThemeSwitchAnimationPackage());
 ```
 
 ## Usage
@@ -40,7 +82,6 @@ export default function Example() {
     <Button
       title="Switch Theme"
       onPress={() => {
-
         switchTheme({
           switchThemeFunction: () => {
             setTheme(theme === 'light' ? 'dark' : 'light'); // your switch theme function
@@ -50,7 +91,6 @@ export default function Example() {
             duration: 900,
           },
         });
-
       }}
     />
   );
@@ -58,6 +98,7 @@ export default function Example() {
 ```
 
 Circular Example
+
 ```js
 switchTheme({
   switchThemeFunction: () => {
@@ -68,35 +109,38 @@ switchTheme({
     duration: 900,
     startingPoint: {
       cxRatio: 0.5,
-      cyRatio: 0.5
-    }
+      cyRatio: 0.5,
+    },
   },
 });
 ```
 
-
 ## switchTheme Function Props
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `switchThemeFunction` | `() => void` | Adds the function you use in your app to switch themes, doesn't matter if you use redux/context/zustand/mobx or any other way |
-| `animationConfig` | `AnimationConfig` | Configuration for the animation -> type, duration, starting point (`default is 'fade' with 500ms duration`)  |
+
+| Name                  | Type              | Description                                                                                                                   |
+| :-------------------- | :---------------- | :---------------------------------------------------------------------------------------------------------------------------- |
+| `switchThemeFunction` | `() => void`      | Adds the function you use in your app to switch themes, doesn't matter if you use redux/context/zustand/mobx or any other way |
+| `animationConfig`     | `AnimationConfig` | Configuration for the animation -> type, duration, starting point (`default is 'fade' with 500ms duration`)                   |
 
 ## animationConfig options
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `type` | `fade` `circular` `inverted-circular` | Specifies animation type |
-| `duration` | `number` | Specifies duration in milliseconds |
-| `startingPoint` | `StartingPointConfig` | Configuration for the `circular` animation, where does the animation start in the screen |
+
+| Name            | Type                                  | Description                                                                              |
+| :-------------- | :------------------------------------ | :--------------------------------------------------------------------------------------- |
+| `type`          | `fade` `circular` `inverted-circular` | Specifies animation type                                                                 |
+| `duration`      | `number`                              | Specifies duration in milliseconds                                                       |
+| `startingPoint` | `StartingPointConfig`                 | Configuration for the `circular` animation, where does the animation start in the screen |
 
 ## startingPoint options
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `cx` | `number` | Specifies starting x point for `circular` and `inverted-circular` animation (should not exceed your screen width) |
-| `cy` | `number` | Specifies starting y point for `circular` and `inverted-circular` animation (should not exceed your screen height) |
+
+| Name      | Type     | Description                                                                                                                   |
+| :-------- | :------- | :---------------------------------------------------------------------------------------------------------------------------- |
+| `cx`      | `number` | Specifies starting x point for `circular` and `inverted-circular` animation (should not exceed your screen width)             |
+| `cy`      | `number` | Specifies starting y point for `circular` and `inverted-circular` animation (should not exceed your screen height)            |
 | `cxRatio` | `number` | Specifies starting percentage of x point for `circular` and `inverted-circular` animation (should be number between -1 and 1) |
 | `cyRatio` | `number` | Specifies starting percentage of y point for `circular` and `inverted-circular` animation (should be number between -1 and 1) |
 
 ## Start Circular Animation from/to speceific Button
+
 If you would like the circular animation to start from/to a button/view on your ui automatically, you can do the following
 
 ```js
@@ -115,16 +159,42 @@ import switchTheme from 'react-native-theme-switch-animation';
           startingPoint: {
             cy: py + height / 2,
             cx: px + width / 2,
-          }
+          },
         },
       });
     });
   }}
-/>
+/>;
 ```
 
+## Trouble shooting
+
+### [iOS] Artifact for some components with border
+
+https://github.com/WadhahEssam/react-native-theme-switch-animation/assets/24798045/8ad14c41-8757-4c21-b7e7-bf47b23e7f8b
+
+this can be solved by adding a borderRadius of any value more than 1.2 for the component
+
+```js
+<View
+  style={{
+    borderWidth: 1,
+    borderColor: theme === 'light' ? 'black' : 'white',
+    borderRadius: 1.2, // -> Add This
+    padding: 20,
+    marginBottom: 20,
+  }}
+>
+  <Text
+    style={{
+      color: theme === 'light' ? 'black' : 'white',
+    }}
+  >
+    test
+  </Text>
+</View>
+```
 
 ## License
 
 MIT
-
